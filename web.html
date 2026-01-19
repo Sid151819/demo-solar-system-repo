@@ -15,26 +15,21 @@
             overflow: hidden;
         }
 
-        /* 🌠 Stars */
+        /* Stars */
         .stars {
             position: absolute;
             inset: -200%;
             background-image:
                 radial-gradient(2px 2px at 20% 30%, white, transparent),
                 radial-gradient(1px 1px at 70% 60%, white, transparent),
-                radial-gradient(1.5px 1.5px at 40% 80%, white, transparent),
-                radial-gradient(1px 1px at 90% 20%, white, transparent);
-            animation: drift 120s linear infinite;
-            opacity: 0.7;
+                radial-gradient(1.5px 1.5px at 40% 80%, white, transparent);
+            animation: drift 140s linear infinite;
+            opacity: 0.6;
         }
 
         @keyframes drift {
-            from {
-                transform: translate(0, 0);
-            }
-
             to {
-                transform: translate(200px, 200px);
+                transform: translate(300px, 300px);
             }
         }
 
@@ -44,7 +39,7 @@
             height: 100%;
         }
 
-        /* ☀️ Sun */
+        /* Sun */
         .sun {
             position: absolute;
             top: 50%;
@@ -54,10 +49,10 @@
             transform: translate(-50%, -50%);
             background: radial-gradient(circle, #ffd700, #ff8c00);
             border-radius: 50%;
-            box-shadow: 0 0 80px 30px rgba(255, 140, 0, 0.7);
+            box-shadow: 0 0 90px 35px rgba(255, 140, 0, 0.7);
         }
 
-        /* 🪐 Orbits */
+        /* Orbits */
         .orbit {
             position: absolute;
             top: 50%;
@@ -69,16 +64,11 @@
         }
 
         @keyframes rotate {
-            from {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
             to {
                 transform: translate(-50%, -50%) rotate(360deg);
             }
         }
 
-        /* Orbit sizes + speed */
         .mercury {
             width: 220px;
             height: 220px;
@@ -103,37 +93,53 @@
             animation-duration: 70s;
         }
 
+        /* Asteroid belt */
+        .belt {
+            width: 600px;
+            height: 600px;
+            animation-duration: 110s;
+        }
+
+        .asteroid {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #888;
+            border-radius: 50%;
+        }
+
         .jupiter {
-            width: 650px;
-            height: 650px;
+            width: 700px;
+            height: 700px;
             animation-duration: 100s;
         }
 
         .saturn {
-            width: 800px;
-            height: 800px;
+            width: 860px;
+            height: 860px;
             animation-duration: 130s;
         }
 
         .uranus {
-            width: 950px;
-            height: 950px;
+            width: 1020px;
+            height: 1020px;
             animation-duration: 160s;
         }
 
         .neptune {
-            width: 1100px;
-            height: 1100px;
+            width: 1180px;
+            height: 1180px;
             animation-duration: 190s;
         }
 
-        /* 🌍 Planets */
+        /* Planets */
         .planet {
             position: absolute;
             top: 50%;
             left: 100%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
+            cursor: pointer;
         }
 
         .mercury .planet {
@@ -166,7 +172,6 @@
             background: linear-gradient(#d2b48c, #b87333);
         }
 
-        /* Saturn with rings */
         .saturn .planet {
             width: 30px;
             height: 30px;
@@ -198,15 +203,30 @@
             background: #4169e1;
         }
 
-        /* Info */
-        .info {
+        /* Popup */
+        .popup {
             position: absolute;
-            right: 20px;
-            bottom: 20px;
-            width: 280px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            place-items: center;
+        }
+
+        .popup-content {
+            background: #0b1225;
+            padding: 30px;
             border: 1px solid #444;
+            width: 300px;
+            text-align: center;
+        }
+
+        .popup button {
+            margin-top: 20px;
+            padding: 8px 16px;
+            background: none;
+            border: 1px solid #777;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -216,38 +236,66 @@
     <div class="stars"></div>
 
     <div class="universe">
+
         <div class="sun"></div>
 
         <div class="orbit mercury">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Mercury','Smallest and closest to the Sun')"></div>
         </div>
         <div class="orbit venus">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Venus','Hottest planet with thick clouds')"></div>
         </div>
         <div class="orbit earth">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Earth','Only known planet with life')"></div>
         </div>
         <div class="orbit mars">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Mars','Cold red desert world')"></div>
         </div>
+
+        <!-- Asteroid Belt -->
+        <div class="orbit belt">
+            <div class="asteroid" style="top:10%;left:60%"></div>
+            <div class="asteroid" style="top:40%;left:20%"></div>
+            <div class="asteroid" style="top:70%;left:80%"></div>
+            <div class="asteroid" style="top:30%;left:90%"></div>
+            <div class="asteroid" style="top:80%;left:30%"></div>
+        </div>
+
         <div class="orbit jupiter">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Jupiter','Largest gas giant')"></div>
         </div>
         <div class="orbit saturn">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Saturn','Famous for its rings')"></div>
         </div>
         <div class="orbit uranus">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Uranus','Ice giant with tilted axis')"></div>
         </div>
         <div class="orbit neptune">
-            <div class="planet"></div>
+            <div class="planet" onclick="openPopup('Neptune','Fastest winds in the solar system')"></div>
+        </div>
+
+    </div>
+
+    <!-- Popup -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2 id="pName"></h2>
+            <p id="pInfo"></p>
+            <button onclick="closePopup()">Close</button>
         </div>
     </div>
 
-    <div class="info">
-        <h3>Solar System</h3>
-        <p>All 8 planets with realistic spacing and orbital speeds.</p>
-    </div>
+    <script>
+        function openPopup(name, info) {
+            document.getElementById("pName").textContent = name;
+            document.getElementById("pInfo").textContent = info;
+            document.getElementById("popup").style.display = "grid";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+    </script>
 
 </body>
 
