@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solar System Experience+</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #050b1e, #000);
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .universe {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 1.2s ease;
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(1px 1px at 70% 60%, white, transparent),
+                radial-gradient(1.5px 1.5px at 40% 80%, white, transparent),
+                radial-gradient(1px 1px at 90% 20%, white, transparent);
+            opacity: 0.8;
+        }
+
+        /* Sun */
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 80px 30px rgba(255, 140, 0, 0.7);
+        }
+
+        /* Orbits */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate linear infinite;
+        }
+
+        .mercury {
+            width: 220px;
+            height: 220px;
+            animation-duration: 20s;
+        }
+
+        .venus {
+            width: 320px;
+            height: 320px;
+            animation-duration: 35s;
+        }
+
+        .earth {
+            width: 420px;
+            height: 420px;
+            animation-duration: 50s;
+        }
+
+        .mars {
+            width: 520px;
+            height: 520px;
+            animation-duration: 70s;
+        }
+
+        .saturn {
+            width: 640px;
+            height: 640px;
+            animation-duration: 90s;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Planets */
+        .planet {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .mercury .planet {
+            width: 12px;
+            height: 12px;
+            background: #aaa;
+        }
+
+        .venus .planet {
+            width: 18px;
+            height: 18px;
+            background: #d4af37;
+        }
+
+        .earth .planet {
+            width: 20px;
+            height: 20px;
+            background: #2e86de;
+        }
+
+        .mars .planet {
+            width: 16px;
+            height: 16px;
+            background: #c0392b;
+        }
+
+        /* Saturn with rings */
+        .saturn .planet {
+            width: 26px;
+            height: 26px;
+            background: #d2b48c;
+            position: relative;
+        }
+
+        .saturn .planet::before {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(20deg);
+        }
+
+        /* Info panel */
+        .info {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            width: 280px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Buttons */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #777;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="universe" id="universe">
+        <div class="stars"></div>
+        <div class="sun"></div>
+
+        <div class="orbit mercury">
+            <div class="planet" onclick="zoom('Mercury','Closest planet to the Sun',1.4)"></div>
+        </div>
+
+        <div class="orbit venus">
+            <div class="planet" onclick="zoom('Venus','Hottest planet with thick clouds',1.6)"></div>
+        </div>
+
+        <div class="orbit earth">
+            <div class="planet" onclick="zoom('Earth','Only known planet with life',1.8)"></div>
+        </div>
+
+        <div class="orbit mars">
+            <div class="planet" onclick="zoom('Mars','Cold red desert world',2)"></div>
+        </div>
+
+        <div class="orbit saturn">
+            <div class="planet" onclick="zoom('Saturn','Gas giant with iconic rings',2.2)"></div>
+        </div>
+    </div>
+
+    <div class="info">
+        <h3 id="planetName">Solar System</h3>
+        <p id="planetInfo">Click a planet to zoom and explore.</p>
+    </div>
+
+    <div class="controls">
+        <button onclick="resetView()">Reset</button>
+        <button onclick="toggleMusic()">🎵 Music</button>
+    </div>
+
+    <audio id="music" loop>
+        <source src="space-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const universe = document.getElementById("universe");
+        const music = document.getElementById("music");
+        let playing = false;
+
+        function zoom(name, info, scale) {
+            universe.style.transform = `scale(${scale})`;
+            document.getElementById("planetName").textContent = name;
+            document.getElementById("planetInfo").textContent = info;
+        }
+
+        function resetView() {
+            universe.style.transform = "scale(1)";
+            document.getElementById("planetName").textContent = "Solar System";
+            document.getElementById("planetInfo").textContent = "Click a planet to zoom and explore.";
+        }
+
+        function toggleMusic() {
+            playing ? music.pause() : music.play();
+            playing = !playing;
+        }
+    </script>
+
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solar System Experience+</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #050b1e, #000);
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .universe {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 1.2s ease;
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(1px 1px at 70% 60%, white, transparent),
+                radial-gradient(1.5px 1.5px at 40% 80%, white, transparent),
+                radial-gradient(1px 1px at 90% 20%, white, transparent);
+            opacity: 0.8;
+        }
+
+        /* Sun */
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 80px 30px rgba(255, 140, 0, 0.7);
+        }
+
+        /* Orbits */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate linear infinite;
+        }
+
+        .mercury {
+            width: 220px;
+            height: 220px;
+            animation-duration: 20s;
+        }
+
+        .venus {
+            width: 320px;
+            height: 320px;
+            animation-duration: 35s;
+        }
+
+        .earth {
+            width: 420px;
+            height: 420px;
+            animation-duration: 50s;
+        }
+
+        .mars {
+            width: 520px;
+            height: 520px;
+            animation-duration: 70s;
+        }
+
+        .saturn {
+            width: 640px;
+            height: 640px;
+            animation-duration: 90s;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Planets */
+        .planet {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .mercury .planet {
+            width: 12px;
+            height: 12px;
+            background: #aaa;
+        }
+
+        .venus .planet {
+            width: 18px;
+            height: 18px;
+            background: #d4af37;
+        }
+
+        .earth .planet {
+            width: 20px;
+            height: 20px;
+            background: #2e86de;
+        }
+
+        .mars .planet {
+            width: 16px;
+            height: 16px;
+            background: #c0392b;
+        }
+
+        /* Saturn with rings */
+        .saturn .planet {
+            width: 26px;
+            height: 26px;
+            background: #d2b48c;
+            position: relative;
+        }
+
+        .saturn .planet::before {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(20deg);
+        }
+
+        /* Info panel */
+        .info {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            width: 280px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Buttons */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #777;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="universe" id="universe">
+        <div class="stars"></div>
+        <div class="sun"></div>
+
+        <div class="orbit mercury">
+            <div class="planet" onclick="zoom('Mercury','Closest planet to the Sun',1.4)"></div>
+        </div>
+
+        <div class="orbit venus">
+            <div class="planet" onclick="zoom('Venus','Hottest planet with thick clouds',1.6)"></div>
+        </div>
+
+        <div class="orbit earth">
+            <div class="planet" onclick="zoom('Earth','Only known planet with life',1.8)"></div>
+        </div>
+
+        <div class="orbit mars">
+            <div class="planet" onclick="zoom('Mars','Cold red desert world',2)"></div>
+        </div>
+
+        <div class="orbit saturn">
+            <div class="planet" onclick="zoom('Saturn','Gas giant with iconic rings',2.2)"></div>
+        </div>
+    </div>
+
+    <div class="info">
+        <h3 id="planetName">Solar System</h3>
+        <p id="planetInfo">Click a planet to zoom and explore.</p>
+    </div>
+
+    <div class="controls">
+        <button onclick="resetView()">Reset</button>
+        <button onclick="toggleMusic()">🎵 Music</button>
+    </div>
+
+    <audio id="music" loop>
+        <source src="space-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const universe = document.getElementById("universe");
+        const music = document.getElementById("music");
+        let playing = false;
+
+        function zoom(name, info, scale) {
+            universe.style.transform = `scale(${scale})`;
+            document.getElementById("planetName").textContent = name;
+            document.getElementById("planetInfo").textContent = info;
+        }
+
+        function resetView() {
+            universe.style.transform = "scale(1)";
+            document.getElementById("planetName").textContent = "Solar System";
+            document.getElementById("planetInfo").textContent = "Click a planet to zoom and explore.";
+        }
+
+        function toggleMusic() {
+            playing ? music.pause() : music.play();
+            playing = !playing;
+        }
+    </script>
+
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solar System Experience+</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #050b1e, #000);
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .universe {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 1.2s ease;
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(1px 1px at 70% 60%, white, transparent),
+                radial-gradient(1.5px 1.5px at 40% 80%, white, transparent),
+                radial-gradient(1px 1px at 90% 20%, white, transparent);
+            opacity: 0.8;
+        }
+
+        /* Sun */
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 80px 30px rgba(255, 140, 0, 0.7);
+        }
+
+        /* Orbits */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate linear infinite;
+        }
+
+        .mercury {
+            width: 220px;
+            height: 220px;
+            animation-duration: 20s;
+        }
+
+        .venus {
+            width: 320px;
+            height: 320px;
+            animation-duration: 35s;
+        }
+
+        .earth {
+            width: 420px;
+            height: 420px;
+            animation-duration: 50s;
+        }
+
+        .mars {
+            width: 520px;
+            height: 520px;
+            animation-duration: 70s;
+        }
+
+        .saturn {
+            width: 640px;
+            height: 640px;
+            animation-duration: 90s;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Planets */
+        .planet {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .mercury .planet {
+            width: 12px;
+            height: 12px;
+            background: #aaa;
+        }
+
+        .venus .planet {
+            width: 18px;
+            height: 18px;
+            background: #d4af37;
+        }
+
+        .earth .planet {
+            width: 20px;
+            height: 20px;
+            background: #2e86de;
+        }
+
+        .mars .planet {
+            width: 16px;
+            height: 16px;
+            background: #c0392b;
+        }
+
+        /* Saturn with rings */
+        .saturn .planet {
+            width: 26px;
+            height: 26px;
+            background: #d2b48c;
+            position: relative;
+        }
+
+        .saturn .planet::before {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(20deg);
+        }
+
+        /* Info panel */
+        .info {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            width: 280px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Buttons */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #777;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="universe" id="universe">
+        <div class="stars"></div>
+        <div class="sun"></div>
+
+        <div class="orbit mercury">
+            <div class="planet" onclick="zoom('Mercury','Closest planet to the Sun',1.4)"></div>
+        </div>
+
+        <div class="orbit venus">
+            <div class="planet" onclick="zoom('Venus','Hottest planet with thick clouds',1.6)"></div>
+        </div>
+
+        <div class="orbit earth">
+            <div class="planet" onclick="zoom('Earth','Only known planet with life',1.8)"></div>
+        </div>
+
+        <div class="orbit mars">
+            <div class="planet" onclick="zoom('Mars','Cold red desert world',2)"></div>
+        </div>
+
+        <div class="orbit saturn">
+            <div class="planet" onclick="zoom('Saturn','Gas giant with iconic rings',2.2)"></div>
+        </div>
+    </div>
+
+    <div class="info">
+        <h3 id="planetName">Solar System</h3>
+        <p id="planetInfo">Click a planet to zoom and explore.</p>
+    </div>
+
+    <div class="controls">
+        <button onclick="resetView()">Reset</button>
+        <button onclick="toggleMusic()">🎵 Music</button>
+    </div>
+
+    <audio id="music" loop>
+        <source src="space-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const universe = document.getElementById("universe");
+        const music = document.getElementById("music");
+        let playing = false;
+
+        function zoom(name, info, scale) {
+            universe.style.transform = `scale(${scale})`;
+            document.getElementById("planetName").textContent = name;
+            document.getElementById("planetInfo").textContent = info;
+        }
+
+        function resetView() {
+            universe.style.transform = "scale(1)";
+            document.getElementById("planetName").textContent = "Solar System";
+            document.getElementById("planetInfo").textContent = "Click a planet to zoom and explore.";
+        }
+
+        function toggleMusic() {
+            playing ? music.pause() : music.play();
+            playing = !playing;
+        }
+    </script>
+
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solar System Experience+</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #050b1e, #000);
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .universe {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 1.2s ease;
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(1px 1px at 70% 60%, white, transparent),
+                radial-gradient(1.5px 1.5px at 40% 80%, white, transparent),
+                radial-gradient(1px 1px at 90% 20%, white, transparent);
+            opacity: 0.8;
+        }
+
+        /* Sun */
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 80px 30px rgba(255, 140, 0, 0.7);
+        }
+
+        /* Orbits */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate linear infinite;
+        }
+
+        .mercury {
+            width: 220px;
+            height: 220px;
+            animation-duration: 20s;
+        }
+
+        .venus {
+            width: 320px;
+            height: 320px;
+            animation-duration: 35s;
+        }
+
+        .earth {
+            width: 420px;
+            height: 420px;
+            animation-duration: 50s;
+        }
+
+        .mars {
+            width: 520px;
+            height: 520px;
+            animation-duration: 70s;
+        }
+
+        .saturn {
+            width: 640px;
+            height: 640px;
+            animation-duration: 90s;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Planets */
+        .planet {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .mercury .planet {
+            width: 12px;
+            height: 12px;
+            background: #aaa;
+        }
+
+        .venus .planet {
+            width: 18px;
+            height: 18px;
+            background: #d4af37;
+        }
+
+        .earth .planet {
+            width: 20px;
+            height: 20px;
+            background: #2e86de;
+        }
+
+        .mars .planet {
+            width: 16px;
+            height: 16px;
+            background: #c0392b;
+        }
+
+        /* Saturn with rings */
+        .saturn .planet {
+            width: 26px;
+            height: 26px;
+            background: #d2b48c;
+            position: relative;
+        }
+
+        .saturn .planet::before {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(20deg);
+        }
+
+        /* Info panel */
+        .info {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            width: 280px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            backdrop-filter: blur(6px);
+        }
+
+        /* Buttons */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #777;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="universe" id="universe">
+        <div class="stars"></div>
+        <div class="sun"></div>
+
+        <div class="orbit mercury">
+            <div class="planet" onclick="zoom('Mercury','Closest planet to the Sun',1.4)"></div>
+        </div>
+
+        <div class="orbit venus">
+            <div class="planet" onclick="zoom('Venus','Hottest planet with thick clouds',1.6)"></div>
+        </div>
+
+        <div class="orbit earth">
+            <div class="planet" onclick="zoom('Earth','Only known planet with life',1.8)"></div>
+        </div>
+
+        <div class="orbit mars">
+            <div class="planet" onclick="zoom('Mars','Cold red desert world',2)"></div>
+        </div>
+
+        <div class="orbit saturn">
+            <div class="planet" onclick="zoom('Saturn','Gas giant with iconic rings',2.2)"></div>
+        </div>
+    </div>
+
+    <div class="info">
+        <h3 id="planetName">Solar System</h3>
+        <p id="planetInfo">Click a planet to zoom and explore.</p>
+    </div>
+
+    <div class="controls">
+        <button onclick="resetView()">Reset</button>
+        <button onclick="toggleMusic()">🎵 Music</button>
+    </div>
+
+    <audio id="music" loop>
+        <source src="space-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const universe = document.getElementById("universe");
+        const music = document.getElementById("music");
+        let playing = false;
+
+        function zoom(name, info, scale) {
+            universe.style.transform = `scale(${scale})`;
+            document.getElementById("planetName").textContent = name;
+            document.getElementById("planetInfo").textContent = info;
+        }
+
+        function resetView() {
+            universe.style.transform = "scale(1)";
+            document.getElementById("planetName").textContent = "Solar System";
+            document.getElementById("planetInfo").textContent = "Click a planet to zoom and explore.";
+        }
+
+        function toggleMusic() {
+            playing ? music.pause() : music.play();
+            playing = !playing;
+        }
+    </script>
+
+</body>
+
+</html>
