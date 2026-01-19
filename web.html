@@ -93,21 +93,6 @@
             animation-duration: 70s;
         }
 
-        /* Asteroid belt */
-        .belt {
-            width: 600px;
-            height: 600px;
-            animation-duration: 110s;
-        }
-
-        .asteroid {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #888;
-            border-radius: 50%;
-        }
-
         .jupiter {
             width: 700px;
             height: 700px;
@@ -132,16 +117,33 @@
             animation-duration: 190s;
         }
 
-        /* Planets */
-        .planet {
+        /* Planet + label wrapper */
+        .body {
             position: absolute;
             top: 50%;
             left: 100%;
             transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .planet {
+            margin: auto;
             border-radius: 50%;
             cursor: pointer;
         }
 
+        .label {
+            margin-top: 6px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .labels-on .label {
+            opacity: 0.85;
+        }
+
+        /* Planet styles */
         .mercury .planet {
             width: 10px;
             height: 10px;
@@ -203,27 +205,16 @@
             background: #4169e1;
         }
 
-        /* Popup */
-        .popup {
+        /* Controls */
+        .controls {
             position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            place-items: center;
+            top: 20px;
+            right: 20px;
         }
 
-        .popup-content {
-            background: #0b1225;
-            padding: 30px;
-            border: 1px solid #444;
-            width: 300px;
-            text-align: center;
-        }
-
-        .popup button {
-            margin-top: 20px;
-            padding: 8px 16px;
-            background: none;
+        button {
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.6);
             border: 1px solid #777;
             color: white;
             cursor: pointer;
@@ -235,65 +226,74 @@
 
     <div class="stars"></div>
 
-    <div class="universe">
-
+    <div class="universe labels-on" id="universe">
         <div class="sun"></div>
 
         <div class="orbit mercury">
-            <div class="planet" onclick="openPopup('Mercury','Smallest and closest to the Sun')"></div>
-        </div>
-        <div class="orbit venus">
-            <div class="planet" onclick="openPopup('Venus','Hottest planet with thick clouds')"></div>
-        </div>
-        <div class="orbit earth">
-            <div class="planet" onclick="openPopup('Earth','Only known planet with life')"></div>
-        </div>
-        <div class="orbit mars">
-            <div class="planet" onclick="openPopup('Mars','Cold red desert world')"></div>
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Mercury</div>
+            </div>
         </div>
 
-        <!-- Asteroid Belt -->
-        <div class="orbit belt">
-            <div class="asteroid" style="top:10%;left:60%"></div>
-            <div class="asteroid" style="top:40%;left:20%"></div>
-            <div class="asteroid" style="top:70%;left:80%"></div>
-            <div class="asteroid" style="top:30%;left:90%"></div>
-            <div class="asteroid" style="top:80%;left:30%"></div>
+        <div class="orbit venus">
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Venus</div>
+            </div>
+        </div>
+
+        <div class="orbit earth">
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Earth</div>
+            </div>
+        </div>
+
+        <div class="orbit mars">
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Mars</div>
+            </div>
         </div>
 
         <div class="orbit jupiter">
-            <div class="planet" onclick="openPopup('Jupiter','Largest gas giant')"></div>
-        </div>
-        <div class="orbit saturn">
-            <div class="planet" onclick="openPopup('Saturn','Famous for its rings')"></div>
-        </div>
-        <div class="orbit uranus">
-            <div class="planet" onclick="openPopup('Uranus','Ice giant with tilted axis')"></div>
-        </div>
-        <div class="orbit neptune">
-            <div class="planet" onclick="openPopup('Neptune','Fastest winds in the solar system')"></div>
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Jupiter</div>
+            </div>
         </div>
 
+        <div class="orbit saturn">
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Saturn</div>
+            </div>
+        </div>
+
+        <div class="orbit uranus">
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Uranus</div>
+            </div>
+        </div>
+
+        <div class="orbit neptune">
+            <div class="body">
+                <div class="planet"></div>
+                <div class="label">Neptune</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Popup -->
-    <div class="popup" id="popup">
-        <div class="popup-content">
-            <h2 id="pName"></h2>
-            <p id="pInfo"></p>
-            <button onclick="closePopup()">Close</button>
-        </div>
+    <div class="controls">
+        <button onclick="toggleLabels()">🏷️ Toggle Labels</button>
     </div>
 
     <script>
-        function openPopup(name, info) {
-            document.getElementById("pName").textContent = name;
-            document.getElementById("pInfo").textContent = info;
-            document.getElementById("popup").style.display = "grid";
-        }
-
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
+        function toggleLabels() {
+            document.getElementById("universe")
+                .classList.toggle("labels-on");
         }
     </script>
 
